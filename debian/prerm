@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -e
+#DEBHELPER#
+
+# Hardcode path
+pyclean /usr/lib/virtio-forwarder
+set +e
