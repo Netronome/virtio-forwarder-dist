@@ -1,0 +1,11 @@
+---
+# Execute with "ansible-playbook playbook.yaml -i hosts.yaml -v"
+- name: Build package
+  hosts: all
+  vars:
+    maintainer_name: Zuul
+    maintainer_email: zuul@netronome.com
+    distro: bionic
+  roles:
+  - role: prepare-buildenv
+    tags: prepare-buildenv

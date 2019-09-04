@@ -1,0 +1,17 @@
+- job:
+   name: sbuild-deb-build
+   description: Build deb package using sbuild
+   run: ansible/playbook.yaml
+   nodeset:
+     nodes:
+       - name: builder
+         label: dib-ubuntu-bionic
+
+- project:
+    name: xvio/virtio-forwarder-dist
+    check:
+      jobs:
+        - noop
+    gate:
+      jobs:
+        - noop

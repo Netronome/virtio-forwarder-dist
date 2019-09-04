@@ -1,0 +1,4 @@
+---
+skip_list: [301, 401, 403, 502, 503]
+exclude_paths:
+  - ansible/roles/prepare-buildenv/tasks/restart-zuul-console.yaml
