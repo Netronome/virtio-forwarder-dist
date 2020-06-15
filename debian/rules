@@ -7,5 +7,12 @@
 DPKG_EXPORT_BUILDFLAGS = 1
 include /usr/share/dpkg/default.mk
 
+# Populate a list of DPDK librte* packages to append to the "Recommends field"
+# This will ensure the correct versions of these packages will be installed
+PMD_PKGS := $(shell apt-cache depends dpdk | grep 'Recommends: librte' | cut -d':' -f2- | xargs | sed -e 's/ /, /g')
+
 %:
 	dh $@ --buildsystem=meson
+
+override_dh_gencontrol:
+	dh_gencontrol -- -Vshlibs:Recommends="$(PMD_PKGS)"
