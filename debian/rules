@@ -6,8 +6,15 @@
 
 DEB_HOST_GNU_CPU ?= $(shell dpkg-architecture -qDEB_HOST_GNU_CPU)
 
+# Populate a list of DPDK librte* packages to append to the "Recommends field"
+# This will ensure the correct versions of these packages will be installed
+PMD_PKGS := $(shell apt-cache depends dpdk | grep 'Recommends: librte' | cut -d':' -f2- | xargs | sed -e 's/ /, /g')
+
 %:
 	ARCH=$(DEB_HOST_GNU_CPU) dh $@
+
+override_dh_gencontrol:
+	dh_gencontrol -- -Vshlibs:Recommends="$(PMD_PKGS)"
 
 override_dh_auto_install:
 	$(MAKE) DESTDIR=$$(pwd)/debian/virtio-forwarder prefix=/usr \
