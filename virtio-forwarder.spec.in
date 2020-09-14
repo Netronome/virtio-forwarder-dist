@@ -1,33 +1,54 @@
-Name:           virtio-forwarder
+Name:           virtio-forwarder__STATIC__
 Version:        __VRELAY_VERSION__
 Release:        __PKG_RELEASE__%{?dist}
 Summary:        SR-IOV virtual function to virtio packet forwarder
 
 License:        BSD
 URL:            http://netronome.com
-Source0:        https://rpm.netronome.com/archives/virtio-forwarder/virtio-forwarder-__VRELAY_VERSION__-__PKG_RELEASE__.tar.bz2
-%if 0%{?rhel} && 0%{?rhel} <= 7
-Requires:       protobuf-python
+Source0:        https://rpm.netronome.com/archives/virtio-forwarder/virtio-forwarder__STATIC__-__VRELAY_VERSION__-__PKG_RELEASE__.tar.bz2
+
+## Fedora Requires and BuildRequires
+%if 0%{?fedora}
+Requires:       python3-protobuf
 Requires:       python-zmq
-%else
+BuildRequires:  python-devel
+BuildRequires:  python-sphinx
+BuildRequires:  python-sphinx_rtd_theme
+%endif
+
+## Rhel/CentOS 7.x
+%if 0%{?rhel} && 0%{?rhel} >= 7 && 0%{?rhel} < 8
 Requires:       python2-protobuf
 Requires:       python2-zmq
-%endif
-BuildRequires:  make gcc dpdk-devel
-BuildRequires:  protobuf-c-compiler protobuf-c-devel protobuf-compiler
-BuildRequires:  zeromq-devel
-BuildRequires:  python2-devel python2-sphinx
-%if 0%{?rhel}
-BuildRequires:  python-sphinx_rtd_theme
-%else
+BuildRequires:  python2-devel
+BuildRequires:  python2-sphinx
 BuildRequires:  python2-sphinx_rtd_theme
 %endif
+
+## Rhel/CentOS 8.x
+%if 0%{?rhel} && 0%{?rhel} >= 8
+Requires:       python3-protobuf
+Requires:       python3-zmq
+BuildRequires:  python3-devel
+BuildRequires:  python3-sphinx
+BuildRequires:  python3-sphinx_rtd_theme
+%endif
+
+## Common Requires and BuildRequires
+BuildRequires:  meson
+BuildRequires:  make gcc dpdk-devel
+# Note, for CentOS 8.x the 'PowerTools' repo needs to be enabled for these
+BuildRequires:  protobuf-c-compiler protobuf-c-devel protobuf-compiler
+BuildRequires:  zeromq-devel
 BuildRequires:  numactl-devel
 %{?systemd_requires}
 BuildRequires:  systemd
 
 # Track DPDK's architectures
 ExclusiveArch: x86_64 aarch64 ppc64le %ix86
+
+# This gets populated when building n statically linked virtio-forwarder package
+__CONFLICTS_WITH__
 
 %description
 virtio-forwarder is a userspace networking application that forwards
@@ -40,19 +61,12 @@ of the DPDK poll mode driver (PMD) mechanism.
 %setup -q
 
 %build
-# We need to clean the variables that may have been set from a previous
-# invocation of make, e.g. if rpmbuild is called from a Makefile.
-env -i PATH=$PATH ${RTE_SDK:+RTE_SDK=$RTE_SDK} \
-	${RTE_TARGET:+RTE_TARGET=$RTE_TARGET} \
-	${CFLAGS:+CFLAGS="$CFLAGS"} ${V:+V="$V"} \
-	%make_build
+%undefine _annotated_build
+%meson __MESON_STATIC__
+%meson_build
 
 %install
-env -i PATH=$PATH ${RTE_SDK:+RTE_SDK=$RTE_SDK} \
-	${RTE_TARGET:+RTE_TARGET=$RTE_TARGET} \
-	${CFLAGS:+CFLAGS="$CFLAGS"} ${V:+V="$V"} \
-	%{make_install} prefix=%{_prefix} unitdir=%{_unitdir} \
-	libexecdir=%{_libdir}/virtio-forwarder
+%meson_install
 
 %post
 %systemd_post virtio-forwarder.service

@@ -12,7 +12,12 @@ include /usr/share/dpkg/default.mk
 PMD_PKGS := $(shell apt-cache depends dpdk | grep 'Recommends: librte' | cut -d':' -f2- | xargs | sed -e 's/ /, /g')
 
 %:
-	dh $@ --buildsystem=meson
+	dh $@
+
+override_dh_auto_configure:
+	dh_auto_configure -- \
+		--buildtype=debug \
+		__MESON_STATIC__
 
 override_dh_gencontrol:
 	dh_gencontrol -- -Vshlibs:Recommends="$(PMD_PKGS)"

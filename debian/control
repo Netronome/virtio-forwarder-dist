@@ -1,15 +1,31 @@
-Source: virtio-forwarder
+Source: virtio-forwarder__STATIC__
 Maintainer: Heinrich Kuhn <heinrich.kuhn@netronome.com>
 Section: net
-Build-Depends: debhelper (>= 11~), python-minimal, protobuf-c-compiler, libprotobuf-c-dev, libzmq3-dev, protobuf-compiler, python3-sphinx, libnuma-dev, libdpdk-dev, libpcap-dev, libxen-dev, meson (>= 0.47~), pkg-config, systemd
+Build-Depends:
+ debhelper (>= 11.1~),
+ python3-minimal,
+ protobuf-c-compiler,
+ libprotobuf-c-dev,
+ libzmq3-dev,
+ protobuf-compiler,
+ python3-sphinx,
+ libnuma-dev,
+ libdpdk-dev,
+ libpcap-dev,
+ libxen-dev,
+ meson (>= 0.50~),
+ pkg-config,
+ systemd,
+ dpdk-dev
 Standards-Version: 4.1.4
 Homepage: https://github.com/Netronome/virtio-forwarder
 Priority: optional
 
-Package: virtio-forwarder
+Package: virtio-forwarder__STATIC__
 Architecture: amd64 i386
-Depends: ${misc:Depends}, ${shlibs:Depends}, dpdk, python, python-zmq, python-protobuf
+Depends: ${misc:Depends}, ${shlibs:Depends}, dpdk, python, python3-zmq, python-protobuf
 Recommends: ${shlibs:Recommends}
+__CONFLICTS_WITH__
 Description: SR-IOV virtual function to virtio packet forwarder
  virtio-forwarder is a userspace networking application that forwards
  bi-directional traffic between SR-IOV virtual functions and virtio networking
