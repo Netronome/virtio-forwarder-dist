@@ -31,7 +31,7 @@
 #   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 #   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-while getopts 'so:' opt; do
+while getopts 'so:f:' opt; do
     case ${opt} in
       s)
         STATIC="-static"
@@ -41,8 +41,14 @@ while getopts 'so:' opt; do
       o)
         OUTDIR="$OPTARG"
         ;;
+      f)
+        RPMBUILD_FLAGS="$OPTARG"
+        ;;
     esac
 done
+
+# Default is to build all
+RPMBUILD_FLAGS=${RPMBUILD_FLAGS:-"ba"}
 
 STATIC=${STATIC:-""}
 CONFLICTS_WITH=${CONFLICTS_WITH:-""}
@@ -107,7 +113,7 @@ mv virtio-forwarder/ "${VIRTIO_FORWARDER_NAME}"
 tar cfjp "${RPM_TOPDIR}"/SOURCES/$VIRTIO_FORWARDER_BZ2 "${VIRTIO_FORWARDER_NAME}"
 
 # Call rpmbuild
-rpmbuild -ba -D "_topdir "${RPM_TOPDIR}"" "${RPM_SPEC}"
+rpmbuild -"${RPMBUILD_FLAGS}" -D "_topdir "${RPM_TOPDIR}"" "${RPM_SPEC}"
 
 # Copy the final RPM to $outdir
 if [ -z "$OUTDIR" ]

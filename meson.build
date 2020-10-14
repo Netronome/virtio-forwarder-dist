@@ -29,6 +29,19 @@
 #   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 #   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+if get_option('srpm')
+    prep_run_rpmbuild = find_program(join_paths('scripts', 'prep_and_run_rpmbuild.sh'))
+    if get_option('outdir') == 'outdir'
+        error('Please provide destination for RPM via the "-Doutdir" option')
+    else
+        outdir = get_option('outdir')
+    endif
+
+    # Only generate a source-rpm and print stdout of rpmbuild script
+    r = run_command(prep_run_rpmbuild, '-f', 'bs', '-o', outdir)
+    message(r.stdout().strip())
+endif
+
 if get_option('rpm')
     prep_run_rpmbuild = find_program(join_paths('scripts', 'prep_and_run_rpmbuild.sh'))
     if get_option('outdir') == 'outdir'
