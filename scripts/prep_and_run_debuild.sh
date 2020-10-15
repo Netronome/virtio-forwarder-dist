@@ -74,11 +74,28 @@ find startup/ -maxdepth 1 -type f -regextype posix-extended \
                 -regex '.*(meson.build|.*\.sh)' \
                 -exec cp --parents "{}" "${TMP_BUILD}" \;
 
-# Grab the correct version string from vrelay_version.h
-cd "${MESON_BUILD_ROOT}"/_build
-VERSION_VER_STRING=$(awk '/VIRTIO_FWD_VERSION/&&/define/&&!/SHASH/{count++;if (count<4) printf "%s.", $3; else print $3}' \
-    "${MESON_BUILD_ROOT}"/vrelay_version.h)
+# Copy vrelay_version.h into the scratch area too
+cp "${MESON_BUILD_ROOT}"/vrelay_version.h "${TMP_BUILD}"
 
+# Grab the correct version string from vrelay_version.h
+# At this point, vrelay_version.h will either be in $MESON_SOURCE_ROOT or
+# $MESON_BUILD_ROOT depending on the environment.
+VRELAY_VER_ROOT="${MESON_SOURCE_ROOT}/vrelay_version.h"
+VRELAY_VER_BUILD="${MESON_BUILD_ROOT}/vrelay_version.h"
+
+if [ -f "$VRELAY_VER_ROOT" ]; then
+    VRELAY_VER_FINAL="${VRELAY_VER_ROOT}"
+elif [ -f "$VRELAY_VER_BUILD" ]; then
+    VRELAY_VER_FINAL="${VRELAY_VER_BUILD}"
+else
+    echo "vrelay_version.h not found!"
+    exit
+fi
+
+VERSION_VER_STRING=$(awk '/VIRTIO_FWD_VERSION/&&/define/&&!/SHASH/{count++;if (count<4) printf "%s.", $3; else print $3}' \
+    "${VRELAY_VER_FINAL}")
+
+cd "${MESON_BUILD_ROOT}"/_build
 DEBUILD_DIR="${MESON_BUILD_ROOT}"/_build/virtio-forwarder"${STATIC}"-"${VERSION_VER_STRING}"
 
 # Create a orig.tar.bz2 of the virtio-forwarder code
