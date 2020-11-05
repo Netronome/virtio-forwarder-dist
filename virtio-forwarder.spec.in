@@ -62,8 +62,14 @@ of the DPDK poll mode driver (PMD) mechanism.
 
 %build
 %undefine _annotated_build
-%meson __MESON_STATIC__
-%meson_build
+
+# This PKG_CONFIG_PATH is only needed until the upstream dpdk-devel package in
+# Fedora and CentOS starts shipping a libdpdk.pc file. Until then a custom one
+# is generated and placed in /tmp/pkgconfig (by meson)
+export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/tmp/pkgconfig \
+	%meson __MESON_STATIC__
+export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/tmp/pkgconfig \
+	%meson_build
 
 %install
 %meson_install
