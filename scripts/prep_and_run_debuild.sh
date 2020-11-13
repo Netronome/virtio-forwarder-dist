@@ -31,12 +31,18 @@
 #   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 #   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-while getopts :s opt; do
+while getopts 'smd:' opt; do
     case ${opt} in
       s)
         STATIC="-static"
         CONFLICTS_WITH="Conflicts: virtio-forwarder"
         MESON_STATIC="-Dstatic=true"
+        ;;
+      m)
+        SKIP_DEBUILD="true"
+        ;;
+      d)
+        DEBIAN_DISTRO=${OPTARG}
         ;;
     esac
 done
@@ -45,6 +51,7 @@ STATIC=${STATIC:-""}
 CONFLICTS_WITH=${CONFLICTS_WITH:-"Conflicts:"}
 MESON_STATIC=${MESON_STATIC:-"-Dstatic=false"}
 DEBUILD_DIR="virtio-forwarder$STATIC"
+SKIP_DEBUILD=${SKIP_DEBUILD:-"false"}
 
 PKG_RELEASE=1
 DATE_STR=$(date --rfc-2822)
@@ -132,4 +139,16 @@ if [ "${STATIC}" == "-static" ]; then
 fi
 
 # Finally run debuild
-debuild --rootcmd=fakeroot -e PATH -e CFLAGS -e V -us -uc
+if [ "${SKIP_DEBUILD}" = "true" ]; then
+cat << EOF
+
+  ####################################################################
+  To generate signed sources and .dsc files please follow these steps:
+  cd $DEBUILD_DIR
+  debuild -S -d -k<your_gpg_key>
+  ####################################################################
+
+EOF
+else
+  debuild --rootcmd=fakeroot -e PATH -e CFLAGS -e V -us -uc
+fi

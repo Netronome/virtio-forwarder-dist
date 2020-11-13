@@ -66,3 +66,10 @@ if get_option('deb')
         run_target('build_deb', command: [prep_run_debuild])
     endif
 endif
+
+if get_option('dsc')
+    prep_run_debuild = find_program(join_paths('scripts', 'prep_and_run_debuild.sh'))
+
+    r = run_command(prep_run_debuild, '-m', '-d', get_option('debian_dist'))
+    message(r.stdout().strip())
+endif
