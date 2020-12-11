@@ -68,10 +68,7 @@ find . -maxdepth 1 -type f -regextype posix-extended \
                 -regex '.*(LICENSE|README.rst|README.md|meson.build|\.(c|h|in|proto|txt))' \
                 -exec cp "{}" "${TMP_BUILD}" \;
 
-find scripts/ -maxdepth 1 -type f -regextype posix-extended \
-                -regex '.*(meson.build|.*\.py)' \
-                -exec cp --parents "{}" "${TMP_BUILD}" \;
-
+cp -r scripts/ "${TMP_BUILD}"
 cp --parents startup/virtioforwarder "${TMP_BUILD}"
 cp --parents startup/systemd/*.service "${TMP_BUILD}"
 cp --parents startup/systemd/meson* "${TMP_BUILD}"

@@ -18,11 +18,11 @@ BuildRequires:  python-sphinx_rtd_theme
 
 ## Rhel/CentOS 7.x
 %if 0%{?rhel} && 0%{?rhel} >= 7 && 0%{?rhel} < 8
-Requires:       python2-protobuf
+Requires:       protobuf-python
 Requires:       python2-zmq
-BuildRequires:  python2-devel
-BuildRequires:  python2-sphinx
-BuildRequires:  python2-sphinx_rtd_theme
+BuildRequires:  python-devel
+BuildRequires:  python-sphinx
+BuildRequires:  python-sphinx_rtd_theme
 %endif
 
 ## Rhel/CentOS 8.x

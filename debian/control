@@ -24,7 +24,7 @@ Priority: optional
 
 Package: virtio-forwarder__STATIC__
 Architecture: amd64 i386
-Depends: ${misc:Depends}, ${shlibs:Depends}, dpdk, python, python3-zmq, python-protobuf
+Depends: ${misc:Depends}, ${shlibs:Depends}, dpdk, python3, python3-zmq, python3-protobuf
 Recommends: ${shlibs:Recommends}
 __CONFLICTS_WITH__
 Description: SR-IOV virtual function to virtio packet forwarder
