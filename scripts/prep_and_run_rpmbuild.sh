@@ -121,6 +121,12 @@ sed -ri "s/__CONFLICTS_WITH__/${CONFLICTS_WITH}/g" \
 sed -ri "s/__MESON_STATIC__/${MESON_STATIC}/g" \
     "${RPM_TOPDIR}"/SPECS/virtio-forwarder.spec
 
+# Only remove dpdk-devel build dependancy when building static packages
+if [ ! -z "$STATIC" ]
+then
+    sed -ri "/BuildRequires:  dpdk-devel/d" "${RPM_TOPDIR}"/SPECS/virtio-forwarder.spec
+fi
+
 # Finally, generate a .tar.bz2
 VIRTIO_FORWARDER_NAME=virtio-forwarder"${STATIC}"-"${VERSION_VER_STRING}"
 VIRTIO_FORWARDER_BZ2="${VIRTIO_FORWARDER_NAME}"-"${PKG_RELEASE}".tar.bz2
