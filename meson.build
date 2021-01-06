@@ -60,10 +60,16 @@ endif
 if get_option('deb')
     prep_run_debuild = find_program(join_paths('scripts', 'prep_and_run_debuild.sh'))
 
-    if get_option('static')
-        run_target('build_deb', command: [prep_run_debuild, '-s'])
+    if get_option('outdir') == 'outdir'
+        error('Please provide destination for DEB via the "-Doutdir" option')
     else
-        run_target('build_deb', command: [prep_run_debuild])
+        outdir = get_option('outdir')
+    endif
+
+    if get_option('static')
+        run_target('build_deb', command: [prep_run_debuild, '-s', '-o', outdir, '-d', get_option('debian_dist')])
+    else
+        run_target('build_deb', command: [prep_run_debuild, '-d', '-o', outdir, get_option('debian_dist')])
     endif
 endif
 

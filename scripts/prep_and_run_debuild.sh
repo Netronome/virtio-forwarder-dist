@@ -31,7 +31,7 @@
 #   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 #   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-while getopts 'smd:' opt; do
+while getopts 'smo:d:' opt; do
     case ${opt} in
       s)
         STATIC="-static"
@@ -40,6 +40,9 @@ while getopts 'smd:' opt; do
         ;;
       m)
         SKIP_DEBUILD="true"
+        ;;
+      o)
+        OUTDIR="$OPTARG"
         ;;
       d)
         DEBIAN_DISTRO=${OPTARG}
@@ -148,4 +151,14 @@ cat << EOF
 EOF
 else
   debuild --rootcmd=fakeroot -e PATH -e CFLAGS -e V -us -uc
+
+  # Copy the final DEB to $outdir
+  if [ -z "$OUTDIR" ]
+  then
+      echo 'Error: $OUTDIR is not defined'
+      exit 1
+  else
+      find "${MESON_BUILD_ROOT}"/_build -name "*.deb" -exec cp {} "$OUTDIR" \;
+  fi
+
 fi
