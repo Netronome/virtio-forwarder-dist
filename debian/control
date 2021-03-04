@@ -13,7 +13,7 @@ Build-Depends:
  libdpdk-dev,
  libpcap-dev,
  libxen-dev,
- meson (>= 0.50~),
+ meson (>= 0.45~),
  pkg-config,
  systemd,
  dpdk-dev,
