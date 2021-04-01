@@ -17,7 +17,8 @@ Build-Depends:
  pkg-config,
  systemd,
  dpdk-dev,
- git
+ git,
+ libbsd-dev
 Standards-Version: 4.1.4
 Homepage: https://github.com/Netronome/virtio-forwarder
 Priority: optional

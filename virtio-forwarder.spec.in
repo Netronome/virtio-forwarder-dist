@@ -7,6 +7,9 @@ License:        BSD
 URL:            http://netronome.com
 Source0:        https://rpm.netronome.com/archives/virtio-forwarder/virtio-forwarder__STATIC__-__VRELAY_VERSION__-__PKG_RELEASE__.tar.bz2
 
+## Common Requires
+Requires:       libbsd
+
 ## Fedora Requires and BuildRequires
 %if 0%{?fedora}
 Requires:       python3-protobuf
@@ -45,6 +48,7 @@ BuildRequires:  dpdk-devel
 BuildRequires:  protobuf-c-compiler protobuf-c-devel protobuf-compiler
 BuildRequires:  zeromq-devel
 BuildRequires:  numactl-devel
+BuildRequires:  libbsd-devel
 %{?systemd_requires}
 BuildRequires:  systemd
 
